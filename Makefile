@@ -6,6 +6,8 @@ endif
 
 locally:;@:
 .PHONY: locally
+
+##
 ## Проект
 ## ------
 
@@ -32,13 +34,25 @@ php: ## Зайти в контейнер PHP
 	$(EXEC_PHP) $(if $(cmd),$(cmd),sh)
 .PHONY: php
 
-phpcs: var vendor ## Проверить стиль кода
+##
+## Контроль качества кода
+## ----------------------
+
+lint: var vendor ## Проверить стиль кода
 	$(EXEC_PHP) vendor/bin/phpcs
 .PHONY: phpcs
 
-phpcbf: ## Исправить стиль кода
+fixer: ## Исправить стиль кода
 	$(EXEC_PHP) vendor/bin/phpcbf
 .PHONY: phpcbf
+
+psalm: var vendor ## Запустить полный статический анализ PHP кода при помощи Psalm (https://psalm.dev/)
+	$(EXEC_PHP) vendor/bin/psalm --no-diff $(file)
+.PHONY: psalm
+
+##
+## Help
+## ----------------------
 
 help: ## Информация по доступным командам
 	@gawk -vG=$$(tput setaf 2) -vR=$$(tput sgr0) ' \
