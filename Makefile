@@ -38,6 +38,9 @@ php: ## Зайти в контейнер PHP
 ## Контроль качества кода
 ## ----------------------
 
+check: composer-validate composer-unused composer-audit lint rector psalm deptrac-directories ## Запустить все проверки
+.PHONY: check
+
 lint: var vendor ## Проверить стиль кода
 	$(EXEC_PHP) vendor/bin/phpcs
 .PHONY: phpcs
@@ -69,6 +72,14 @@ composer-unused: vendor ## Обнаружить неиспользуемые з�
 composer-require: vendor ## Обнаружить неявные зависимости от внешних пакетов при помощи ComposerRequireChecker (https://github.com/maglnet/ComposerRequireChecker)
 	$(EXEC_PHP) vendor/bin/composer-require-checker check
 .PHONY: composer-require
+
+composer-validate: ## Провалидировать composer.json и composer.lock при помощи composer validate (https://getcomposer.org/doc/03-cli.md#validate)
+	$(EXEC_PHP) composer validate --strict --no-check-publish
+.PHONY: composer-validate
+
+composer-audit: ## Обнаружить уязвимости в зависимостях Composer при помощи composer audit (https://getcomposer.org/doc/03-cli.md#audit)
+	$(EXEC_PHP) composer audit
+.PHONY: composer-audit
 
 ##
 ## Help
