@@ -38,7 +38,7 @@ php: ## Зайти в контейнер PHP
 ## Контроль качества кода
 ## ----------------------
 
-check: composer-validate composer-unused composer-audit lint rector psalm deptrac-directories ## Запустить все проверки
+check: composer-validate composer-unused composer-audit composer-normalize lint rector psalm deptrac-directories ## Запустить все проверки
 .PHONY: check
 
 lint: var vendor ## Проверить стиль кода
@@ -80,6 +80,14 @@ composer-validate: ## Провалидировать composer.json и composer.l
 composer-audit: ## Обнаружить уязвимости в зависимостях Composer при помощи composer audit (https://getcomposer.org/doc/03-cli.md#audit)
 	$(EXEC_PHP) composer audit
 .PHONY: composer-audit
+
+composer-normalize: var vendor
+	$(EXEC_PHP) composer normalize --dry-run --diff
+.PHONY: composer-normalize
+
+composer-normalize-fix: var vendor
+	$(EXEC_PHP) composer normalize
+.PHONY: composer-normalize-fix
 
 ##
 ## Help
