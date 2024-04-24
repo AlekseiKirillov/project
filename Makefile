@@ -1,6 +1,11 @@
 SHELL := /bin/bash
-EXEC_PHP :=
+EXEC_PHP := docker-compose exec -it php
+ifeq (locally,$(firstword $(MAKECMDGOALS)))
+	EXEC_PHP :=
+endif
 
+locally:;@:
+.PHONY: locally
 ## Проект
 ## ------
 
@@ -10,6 +15,22 @@ vendor: composer.json composer.lock
 
 var:
 	mkdir -p var
+
+up: var ## Запустить приложение
+	docker-compose up --detach --remove-orphans
+	$(MAKE) vendor
+.PHONY: up
+
+down: ## Остановить приложение
+	docker-compose down --remove-orphans
+.PHONY: down
+
+restart: down up ## Перезапустить приложение
+.PHONY: restart
+
+php: ## Зайти в контейнер PHP
+	$(EXEC_PHP) $(if $(cmd),$(cmd),sh)
+.PHONY: php
 
 ## Помощь
 ## ------
