@@ -32,8 +32,13 @@ php: ## Зайти в контейнер PHP
 	$(EXEC_PHP) $(if $(cmd),$(cmd),sh)
 .PHONY: php
 
-## Помощь
-## ------
+phpcs: var vendor ## Проверить стиль кода
+	$(EXEC_PHP) vendor/bin/phpcs
+.PHONY: phpcs
+
+phpcbf: ## Исправить стиль кода
+	$(EXEC_PHP) vendor/bin/phpcbf
+.PHONY: phpcbf
 
 help: ## Информация по доступным командам
 	@gawk -vG=$$(tput setaf 2) -vR=$$(tput sgr0) ' \
