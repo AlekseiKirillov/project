@@ -62,6 +62,14 @@ deptrac-directories: var vendor ## Проверить зависимости г�
 	$(EXEC_PHP) vendor/bin/deptrac analyze --config-file=deptrac.directories.yaml --cache-file=var/.deptrac.directories.cache
 .PHONY: deptrac-directories
 
+composer-unused: vendor ## Обнаружить неиспользуемые зависимости Composer при помощи composer-unused (https://github.com/icanhazstring/composer-unused)
+	$(EXEC_PHP) vendor/bin/composer-unused
+.PHONY: composer-unused
+
+composer-require: vendor ## Обнаружить неявные зависимости от внешних пакетов при помощи ComposerRequireChecker (https://github.com/maglnet/ComposerRequireChecker)
+	$(EXEC_PHP) vendor/bin/composer-require-checker check
+.PHONY: composer-require
+
 ##
 ## Help
 ## ----------------------
