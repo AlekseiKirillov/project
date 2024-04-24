@@ -5,6 +5,7 @@ deptrac:
             - class_superglobal
             - file
             - function
+            - function_call
             - function_superglobal
             - use
 
