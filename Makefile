@@ -58,6 +58,10 @@ rector-fix: var vendor ## Запустить исправление PHP кода
 	$(EXEC_PHP) vendor/bin/rector process
 .PHONY: rector-fix
 
+deptrac-directories: var vendor ## Проверить зависимости групп (https://github.com/sensiolabs-de/deptrac)
+	$(EXEC_PHP) vendor/bin/deptrac analyze --config-file=deptrac.directories.yaml --cache-file=var/.deptrac.directories.cache
+.PHONY: deptrac-directories
+
 ##
 ## Help
 ## ----------------------

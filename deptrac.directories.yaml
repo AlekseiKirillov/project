@@ -1,0 +1,24 @@
+deptrac:
+    analyser:
+        types:
+            - class
+            - class_superglobal
+            - file
+            - function
+            - function_superglobal
+            - use
+
+    paths:
+        - bin
+        - config
+        - public
+        - src
+
+    layers:
+        - { name: bin,        collectors: [ { type: directory, value: bin/.* } ] }
+        - { name: config,     collectors: [ { type: directory, value: config/.* } ] }
+        - { name: public,     collectors: [ { type: directory, value: public/.* } ] }
+        - { name: src,        collectors: [ { type: directory, value: src/.* } ] }
+
+    ruleset:
+        public: [src]
