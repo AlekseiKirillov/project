@@ -6,6 +6,8 @@ endif
 
 locally:;@:
 .PHONY: locally
+
+##
 ## Проект
 ## ------
 
@@ -32,8 +34,64 @@ php: ## Зайти в контейнер PHP
 	$(EXEC_PHP) $(if $(cmd),$(cmd),sh)
 .PHONY: php
 
-## Помощь
-## ------
+##
+## Контроль качества кода
+## ----------------------
+
+check: composer-validate composer-unused composer-audit composer-normalize lint rector psalm deptrac-directories ## Запустить все проверки
+.PHONY: check
+
+lint: var vendor ## Проверить стиль кода
+	$(EXEC_PHP) vendor/bin/phpcs
+.PHONY: phpcs
+
+fixer: ## Исправить стиль кода
+	$(EXEC_PHP) vendor/bin/phpcbf
+.PHONY: phpcbf
+
+psalm: var vendor ## Запустить полный статический анализ PHP кода при помощи Psalm (https://psalm.dev/)
+	$(EXEC_PHP) vendor/bin/psalm --no-diff $(file)
+.PHONY: psalm
+
+rector: var vendor ## Запустить полный анализ PHP кода при помощи Rector (https://getrector.org)
+	$(EXEC_PHP) vendor/bin/rector process --dry-run
+.PHONY: rector
+
+rector-fix: var vendor ## Запустить исправление PHP кода при помощи Rector (https://getrector.org)
+	$(EXEC_PHP) vendor/bin/rector process
+.PHONY: rector-fix
+
+deptrac-directories: var vendor ## Проверить зависимости групп (https://github.com/sensiolabs-de/deptrac)
+	$(EXEC_PHP) vendor/bin/deptrac analyze --config-file=deptrac.directories.yaml --cache-file=var/.deptrac.directories.cache
+.PHONY: deptrac-directories
+
+composer-unused: vendor ## Обнаружить неиспользуемые зависимости Composer при помощи composer-unused (https://github.com/icanhazstring/composer-unused)
+	$(EXEC_PHP) vendor/bin/composer-unused
+.PHONY: composer-unused
+
+composer-require: vendor ## Обнаружить неявные зависимости от внешних пакетов при помощи ComposerRequireChecker (https://github.com/maglnet/ComposerRequireChecker)
+	$(EXEC_PHP) vendor/bin/composer-require-checker check
+.PHONY: composer-require
+
+composer-validate: ## Провалидировать composer.json и composer.lock при помощи composer validate (https://getcomposer.org/doc/03-cli.md#validate)
+	$(EXEC_PHP) composer validate --strict --no-check-publish
+.PHONY: composer-validate
+
+composer-audit: ## Обнаружить уязвимости в зависимостях Composer при помощи composer audit (https://getcomposer.org/doc/03-cli.md#audit)
+	$(EXEC_PHP) composer audit
+.PHONY: composer-audit
+
+composer-normalize: var vendor
+	$(EXEC_PHP) composer normalize --dry-run --diff
+.PHONY: composer-normalize
+
+composer-normalize-fix: var vendor
+	$(EXEC_PHP) composer normalize
+.PHONY: composer-normalize-fix
+
+##
+## Help
+## ----------------------
 
 help: ## Информация по доступным командам
 	@gawk -vG=$$(tput setaf 2) -vR=$$(tput sgr0) ' \
