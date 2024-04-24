@@ -50,6 +50,14 @@ psalm: var vendor ## Запустить полный статический ан
 	$(EXEC_PHP) vendor/bin/psalm --no-diff $(file)
 .PHONY: psalm
 
+rector: var vendor ## Запустить полный анализ PHP кода при помощи Rector (https://getrector.org)
+	$(EXEC_PHP) vendor/bin/rector process --dry-run
+.PHONY: rector
+
+rector-fix: var vendor ## Запустить исправление PHP кода при помощи Rector (https://getrector.org)
+	$(EXEC_PHP) vendor/bin/rector process
+.PHONY: rector-fix
+
 ##
 ## Help
 ## ----------------------

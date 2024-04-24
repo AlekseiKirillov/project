@@ -10,6 +10,4 @@ return
     /**
      * @param array{APP_ENV: string, APP_DEBUG: string, ...} $context
      */
-    static function (array $context) {
-        return new Kernel($context['APP_ENV'], (bool) $context['APP_DEBUG']);
-    };
+    static fn(array $context) => new Kernel($context['APP_ENV'], (bool) $context['APP_DEBUG']);
