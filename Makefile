@@ -38,7 +38,7 @@ php: ## Зайти в контейнер PHP
 ## Контроль качества кода
 ## ----------------------
 
-check: composer-validate composer-unused composer-audit composer-normalize lint rector psalm deptrac-directories ## Запустить все проверки
+check: composer-validate composer-unused composer-normalize composer-require composer-audit lint rector psalm deptrac-directories ## Запустить все проверки
 .PHONY: check
 
 lint: var vendor ## Проверить стиль кода
