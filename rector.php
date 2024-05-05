@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
 use Rector\Php80\Rector\Class_\StringableForToStringRector;
+use Rector\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Set\ValueObject\LevelSetList;
 
@@ -23,5 +24,6 @@ return static function (RectorConfig $rectorConfig): void {
     ]);
     $rectorConfig->skip([
         StringableForToStringRector::class,
+        AddOverrideAttributeToOverriddenMethodsRector::class
     ]);
 };
