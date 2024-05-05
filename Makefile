@@ -38,7 +38,7 @@ php: ## Зайти в контейнер PHP
 ## Контроль качества кода
 ## ----------------------
 
-check: composer-validate composer-unused composer-normalize composer-require composer-audit lint rector psalm deptrac-directories ## Запустить все проверки
+check: composer-validate composer-unused composer-normalize composer-require composer-audit lint rector psalm deptrac-directories test ## Запустить все проверки
 .PHONY: check
 
 lint: var vendor ## Проверить стиль кода
@@ -88,6 +88,10 @@ composer-normalize: var vendor
 composer-normalize-fix: var vendor
 	$(EXEC_PHP) composer normalize
 .PHONY: composer-normalize-fix
+
+test: var vendor ## Запустить тесты PHPUnit (https://phpunit.de)
+	$(EXEC_PHP) vendor/bin/phpunit
+.PHONY: test
 
 ##
 ## Help
