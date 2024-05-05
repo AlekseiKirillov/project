@@ -63,5 +63,6 @@
     <ignoreExceptions>
         <classAndDescendants name="LogicException"/>
         <classAndDescendants name="RuntimeException"/>
+        <classAndDescendants name="Psr\Cache\CacheException"/>
     </ignoreExceptions>
 </psalm>
