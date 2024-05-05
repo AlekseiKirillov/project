@@ -14,7 +14,7 @@ return static function (RectorConfig $rectorConfig): void {
         __DIR__ . '/config',
         __DIR__ . '/public',
         __DIR__ . '/src',
-        // __DIR__ . '/tests',
+        __DIR__ . '/tests',
     ]);
     $rectorConfig->sets([
         LevelSetList::UP_TO_PHP_83,
