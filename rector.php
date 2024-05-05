@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
+use Rector\Php80\Rector\Class_\StringableForToStringRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Set\ValueObject\LevelSetList;
 
@@ -19,5 +20,8 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->sets([
         LevelSetList::UP_TO_PHP_83,
         PHPUnitSetList::PHPUNIT_100,
+    ]);
+    $rectorConfig->skip([
+        StringableForToStringRector::class,
     ]);
 };
