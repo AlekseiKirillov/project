@@ -64,5 +64,10 @@
         <classAndDescendants name="LogicException"/>
         <classAndDescendants name="RuntimeException"/>
         <classAndDescendants name="Psr\Cache\CacheException"/>
+        <classAndDescendants name="Psr\Container\ContainerExceptionInterface"/>
     </ignoreExceptions>
+
+    <stubs>
+        <file name="stubs/Psr/Container/ContainerInterface.phpstub"/>
+    </stubs>
 </psalm>

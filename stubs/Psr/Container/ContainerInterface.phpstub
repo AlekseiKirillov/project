@@ -1,0 +1,14 @@
+<?php
+
+namespace Psr\Container;
+
+/**
+ * @template TEntry
+ */
+interface ContainerInterface
+{
+    /**
+     * @return TEntry
+     */
+    public function get(string $id);
+}
