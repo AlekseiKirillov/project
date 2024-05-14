@@ -38,8 +38,11 @@ php: ## Зайти в контейнер PHP
 ## Контроль качества кода
 ## ----------------------
 
-check: composer-validate composer-unused composer-normalize composer-require composer-audit lint rector psalm deptrac-directories test ## Запустить все проверки
+check: lint psalm rector deptrac-directories test check-composer## Запустить все проверки
 .PHONY: check
+
+check-composer: composer-validate composer-audit composer-require composer-unused composer-normalize  ## Запустить все проверки для Composer
+.PHONE: check-composer
 
 lint: var vendor ## Проверить стиль кода
 	$(EXEC_PHP) vendor/bin/phpcs
