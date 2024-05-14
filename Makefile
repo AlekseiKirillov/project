@@ -80,7 +80,7 @@ composer-validate: ## Провалидировать composer.json и composer.l
 	$(EXEC_PHP) composer validate --strict --no-check-publish
 .PHONY: composer-validate
 
-composer-audit: ## Обнаружить уязвимости в зависимостях Composer при помощи composer audit (https://getcomposer.org/doc/03-cli.md#audit)
+composer-audit: vendor ## Обнаружить уязвимости в зависимостях Composer при помощи composer audit (https://getcomposer.org/doc/03-cli.md#audit)
 	$(EXEC_PHP) composer audit
 .PHONY: composer-audit
 
