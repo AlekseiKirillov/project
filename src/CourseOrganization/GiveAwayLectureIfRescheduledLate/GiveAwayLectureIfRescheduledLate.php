@@ -2,18 +2,22 @@
 
 declare(strict_types=1);
 
-namespace App\CourseOrganization\Model;
+namespace App\CourseOrganization\GiveAwayLectureIfRescheduledLate;
 
+use App\CourseOrganization\GroupAutomation\GiveAwayLecture;
+use App\CourseOrganization\Lecture\LectureRescheduled;
+use App\CourseOrganization\Lecture\LectureScheduled;
 use App\Infrastructure\MessageBus\MessageBus;
 use App\Infrastructure\Uuid\Uuid;
 
-final class GiveAwayLectureIfStartedLate
+final class GiveAwayLectureIfRescheduledLate
 {
     private function __construct(
         private readonly Uuid $lectureId,
         private readonly Uuid $groupId,
         public \DateTimeImmutable $scheduledStartTime,
-    ) {}
+    ) {
+    }
 
     public static function createFromLectureScheduled(LectureScheduled $lectureScheduled): self
     {
@@ -24,15 +28,12 @@ final class GiveAwayLectureIfStartedLate
         );
     }
 
-    public function onLectureRescheduled(LectureRescheduled $event): void
+    public function onLectureRescheduled(LectureRescheduled $event, MessageBus $messageBus): void
     {
-        $this->scheduledStartTime = $event->newScheduledStartTime;
-    }
-
-    public function onLectureStarted(LectureStarted $event, MessageBus $messageBus): void
-    {
-        if ($event->at > $this->scheduledStartTime->modify('+15 minutes')) {
+        if ($event->at > $this->scheduledStartTime->modify('-1 day')) {
             $messageBus->dispatch(new GiveAwayLecture($this->groupId));
         }
+
+        $this->scheduledStartTime = $event->newScheduledStartTime;
     }
 }

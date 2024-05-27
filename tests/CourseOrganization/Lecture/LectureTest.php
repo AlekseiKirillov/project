@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\CourseOrganization\Model;
+namespace App\Tests\CourseOrganization\Lecture;
 
-use App\CourseOrganization\Model\CannotFinishNotStartedLecture;
-use App\CourseOrganization\Model\CannotRescheduleStartedLecture;
-use App\CourseOrganization\Model\CannotStartAlreadyStartedLecture;
-use App\CourseOrganization\Model\Lecture;
-use App\CourseOrganization\Model\LectureFinished;
-use App\CourseOrganization\Model\LectureRescheduled;
-use App\CourseOrganization\Model\LectureScheduled;
-use App\CourseOrganization\Model\LectureStarted;
-use App\Tests\Infrastructure\MessageBus\MessageBusStub;
+use App\CourseOrganization\Lecture\Error\CannotFinishNotStartedLecture;
+use App\CourseOrganization\Lecture\Error\CannotRescheduleStartedLecture;
+use App\CourseOrganization\Lecture\Error\CannotStartFinishedLecture;
+use App\CourseOrganization\Lecture\Lecture;
+use App\CourseOrganization\Lecture\LectureFinished;
+use App\CourseOrganization\Lecture\LectureRescheduled;
+use App\CourseOrganization\Lecture\LectureScheduled;
+use App\CourseOrganization\Lecture\LectureStarted;
 use App\Infrastructure\Uuid\Uuid;
+use App\Tests\Infrastructure\MessageBus\MessageBusStub;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
@@ -78,14 +78,15 @@ final class LectureTest extends TestCase
         self::assertEquals([new LectureStarted($lectureId, $at)], $messageBus->messages);
     }
 
-    public function testItCannotStartStartedLecture(): void
+    public function testItDoesNotStartAgainStartedLecture(): void
     {
+        $messageBus = new MessageBusStub();
         $lecture = Lecture::schedule(Uuid::v7(), Uuid::v7(), new \DateTimeImmutable(), new MessageBusStub());
         $lecture->start(new \DateTimeImmutable(), new MessageBusStub());
 
-        $this->expectExceptionObject(new CannotStartAlreadyStartedLecture());
+        $lecture->start(new \DateTimeImmutable(), $messageBus);
 
-        $lecture->start(new \DateTimeImmutable(), new MessageBusStub());
+        self::assertCount(0, $messageBus->messages);
     }
 
     public function testItCannotStartFinishedLecture(): void
@@ -94,7 +95,7 @@ final class LectureTest extends TestCase
         $lecture->start(new \DateTimeImmutable(), new MessageBusStub());
         $lecture->finish(new \DateTimeImmutable(), new MessageBusStub());
 
-        $this->expectExceptionObject(new CannotStartAlreadyStartedLecture());
+        $this->expectExceptionObject(new CannotStartFinishedLecture());
 
         $lecture->start(new \DateTimeImmutable(), new MessageBusStub());
     }
@@ -121,14 +122,15 @@ final class LectureTest extends TestCase
         $lecture->finish(new \DateTimeImmutable(), new MessageBusStub());
     }
 
-    public function testItCannotFinishFinishedLecture(): void
+    public function testItDoesNotFinishFinishedLecture(): void
     {
+        $messageBus = new MessageBusStub();
         $lecture = Lecture::schedule(Uuid::v7(), Uuid::v7(), new \DateTimeImmutable(), new MessageBusStub());
         $lecture->start(new \DateTimeImmutable(), new MessageBusStub());
         $lecture->finish(new \DateTimeImmutable(), new MessageBusStub());
 
-        $this->expectExceptionObject(new CannotFinishNotStartedLecture());
+        $lecture->finish(new \DateTimeImmutable(), $messageBus);
 
-        $lecture->finish(new \DateTimeImmutable(), new MessageBusStub());
+        self::assertCount(0, $messageBus->messages);
     }
 }

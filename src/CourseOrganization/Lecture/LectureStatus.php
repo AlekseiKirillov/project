@@ -2,8 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\CourseOrganization\Model;
+namespace App\CourseOrganization\Lecture;
 
+/**
+ * @internal
+ * @psalm-internal App\CourseOrganization\Lecture
+ */
 enum LectureStatus
 {
     case SCHEDULED;

@@ -2,14 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\CourseOrganization\Model;
+namespace App\CourseOrganization\StudentLectures;
 
 use App\Infrastructure\Uuid\Uuid;
 
-final readonly class LectureStarted
+final readonly class UnenrollFromLecture
 {
     public function __construct(
+        public Uuid $studentId,
         public Uuid $lectureId,
-        public \DateTimeImmutable $at,
-    ) {}
+    ) {
+    }
 }

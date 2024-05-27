@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\CourseOrganisation\Model;
+namespace App\CourseOrganization\StudentLectures;
 
 use App\Infrastructure\Uuid\Uuid;
 
-final readonly class StudentAddedToGroup
+final readonly class AttendLecture
 {
     public function __construct(
-        public Uuid $groupId,
         public Uuid $studentId,
+        public Uuid $lectureId,
     ) {
     }
 }

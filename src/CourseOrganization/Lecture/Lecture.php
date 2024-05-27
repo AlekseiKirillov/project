@@ -2,8 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\CourseOrganization\Model;
+namespace App\CourseOrganization\Lecture;
 
+use App\CourseOrganization\Lecture\Error\CannotFinishNotStartedLecture;
+use App\CourseOrganization\Lecture\Error\CannotRescheduleStartedLecture;
+use App\CourseOrganization\Lecture\Error\CannotStartFinishedLecture;
 use App\Infrastructure\MessageBus\MessageBus;
 use App\Infrastructure\Uuid\Uuid;
 
@@ -12,12 +15,23 @@ final class Lecture
     private function __construct(
         private readonly Uuid $lectureId,
         private LectureStatus $status = LectureStatus::SCHEDULED,
-    ) {}
+    ) {
+    }
 
-    public static function schedule(Uuid $lectureId, Uuid $groupId, \DateTimeImmutable $scheduledStartTime, MessageBus $messageBus): self
-    {
+    public static function schedule(
+        Uuid $lectureId,
+        Uuid $groupId,
+        \DateTimeImmutable $scheduledStartTime,
+        MessageBus $messageBus
+    ): self {
         $lecture = new self(lectureId: $lectureId);
-        $messageBus->dispatch(new LectureScheduled(lectureId: $lectureId, groupId: $groupId, scheduledStartTime: $scheduledStartTime));
+        $messageBus->dispatch(
+            new LectureScheduled(
+                lectureId: $lectureId,
+                groupId: $groupId,
+                scheduledStartTime: $scheduledStartTime
+            )
+        );
 
         return $lecture;
     }
@@ -25,8 +39,11 @@ final class Lecture
     /**
      * @throws CannotRescheduleStartedLecture
      */
-    public function reschedule(\DateTimeImmutable $newScheduledStartTime, \DateTimeImmutable $at, MessageBus $messageBus): void
-    {
+    public function reschedule(
+        \DateTimeImmutable $newScheduledStartTime,
+        \DateTimeImmutable $at,
+        MessageBus $messageBus
+    ): void {
         if ($this->status !== LectureStatus::SCHEDULED) {
             throw new CannotRescheduleStartedLecture();
         }
@@ -39,12 +56,16 @@ final class Lecture
     }
 
     /**
-     * @throws CannotStartAlreadyStartedLecture
+     * @throws CannotStartFinishedLecture
      */
     public function start(\DateTimeImmutable $at, MessageBus $messageBus): void
     {
-        if ($this->status !== LectureStatus::SCHEDULED) {
-            throw new CannotStartAlreadyStartedLecture();
+        if ($this->status === LectureStatus::STARTED) {
+            return;
+        }
+
+        if ($this->status === LectureStatus::FINISHED) {
+            throw new CannotStartFinishedLecture();
         }
 
         $this->status = LectureStatus::STARTED;
@@ -60,7 +81,11 @@ final class Lecture
      */
     public function finish(\DateTimeImmutable $at, MessageBus $messageBus): void
     {
-        if ($this->status !== LectureStatus::STARTED) {
+        if ($this->status === LectureStatus::FINISHED) {
+            return;
+        }
+
+        if ($this->status === LectureStatus::SCHEDULED) {
             throw new CannotFinishNotStartedLecture();
         }
 
