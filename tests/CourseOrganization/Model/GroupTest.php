@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\CourseOrganization\Model;
+namespace App\Tests\CourseOrganization\Model;
 
-use App\Infrastructure\MessageBus\MessageBusStub;
+use App\Tests\Infrastructure\MessageBus\MessageBusStub;
 use App\Infrastructure\Uuid\Uuid;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
